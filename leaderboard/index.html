@@ -21,6 +21,8 @@
       <button id="modeswitch_reverse" data-theme="dark" type="button">Reverse Mode</button>
     </div>
 
+    <p class="container" id="players_count">Players: ?</p>
+
     <table data-theme="dark">
       <thead id="board_header">
       </thead>
@@ -74,6 +76,16 @@ window.addEventListener('load', function () {
     }));
   }
 
+  function formatTime(duration_seconds) {
+    let dateObj = new Date(duration_seconds * 1000);
+    let hours = dateObj.getUTCHours();
+    let minutes = dateObj.getUTCMinutes();
+    let seconds = dateObj.getSeconds();
+    return hours.toString().padStart(2, '0') + ':' + 
+        minutes.toString().padStart(2, '0') + ':' + 
+        seconds.toString().padStart(2, '0');
+  }
+
   const modeColumns = {
     'classic':   ['rank', 'player_name', 'difficulty', 'score', 'time'],
     'arena':     ['rank', 'player_name', 'difficulty', 'score'],
@@ -103,9 +115,20 @@ window.addEventListener('load', function () {
       for (let col of columns) {
         if (col === 'player_name') {
           let id = sanitizePlayerName(entry[col]);
-          entryCols.push(`<td><a href="#${id}" id="${id}"># ${entry[col]}</a></td>`);
+          if (entry["drones"]) {
+            let drones = entry["drones"].split(",").join(", ");
+            entryCols.push(`<td><a href="#${id}" id="${id}">${entry[col]}</a> <span class="hint" title="${drones}">❓</span></td>`);
+          } else {
+            entryCols.push(`<td><a href="#${id}" id="${id}">${entry[col]}</a></span></td>`);
+          }
         } else {
-          entryCols.push(`<td>${entry[col]}</td>`);
+          let value = entry[col];
+          if (col === 'time') {
+            value = formatTime(0+value);
+          } else if (col === 'difficulty') {
+            value += '%';
+          }
+          entryCols.push(`<td>${value}</td>`);
         }
       }
       rows.push('<tr>' + entryCols.join('') + '</tr>');
@@ -116,6 +139,8 @@ window.addEventListener('load', function () {
     if (hashLocation) {
       window.location.href = hashLocation;
     }
+
+    document.getElementById('players_count').innerHTML = `Players: ${jsonData.length}`;
   }
 
   function initTable() {
@@ -124,8 +149,8 @@ window.addEventListener('load', function () {
       $tableBody.innerHTML = '';
       return;
     }
-    // const serverEndpoint = `http://127.0.0.1:8080/get-board?mode=${gameMode}&season=${gameSeason}`;
-    const serverEndpoint = `https://quasilyte.tech/roboden/api/get-board?mode=${gameMode}&season=${gameSeason}`;
+    const serverEndpoint = `http://127.0.0.1:8080/get-board?mode=${gameMode}&season=${gameSeason}`;
+    // const serverEndpoint = `https://quasilyte.tech/roboden/api/get-board?mode=${gameMode}&season=${gameSeason}`;
     fetch(serverEndpoint)
       .then((response) => response.json())
       .then((jsonData) => fillTable(jsonData));
