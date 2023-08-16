@@ -149,8 +149,8 @@ window.addEventListener('load', function () {
       $tableBody.innerHTML = '';
       return;
     }
-    const serverEndpoint = `http://127.0.0.1:8080/get-board?mode=${gameMode}&season=${gameSeason}`;
-    // const serverEndpoint = `https://quasilyte.tech/roboden/api/get-board?mode=${gameMode}&season=${gameSeason}`;
+    // const serverEndpoint = `http://127.0.0.1:8080/get-board?mode=${gameMode}&season=${gameSeason}`;
+    const serverEndpoint = `https://quasilyte.tech/roboden/api/get-board?mode=${gameMode}&season=${gameSeason}`;
     fetch(serverEndpoint)
       .then((response) => response.json())
       .then((jsonData) => fillTable(jsonData));
