@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+
+<!-- head -->
+  <link rel="stylesheet" href="/pico.min.css"> 
+  <link rel="stylesheet" href="/styles.css"> 
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta charset="utf-8"/>
+  <title>Roboden Leaderboard</title>
+<!-- end head -->
+
+<div class="container">
+  <img class="container" src="/logo.png">
+
+  <div class="textblock container">
+    <h2 id="board_title">Leaderboard</h2>
+
+    <div class="grid">
+      <button id="modeswitch_classic" data-theme="dark" type="button">Classic Mode</button>
+      <button id="modeswitch_arena" data-theme="dark" type="button">Arena Mode</button>
+      <button id="modeswitch_inf_arena" data-theme="dark" type="button">Infinite Arena Mode</button>
+      <button id="modeswitch_reverse" data-theme="dark" type="button">Reverse Mode</button>
+    </div>
+
+    <table data-theme="dark">
+      <thead id="board_header">
+      </thead>
+      <tbody id="board_body">
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<footer class="container">
+  <p>
+    A game by Iskander (quasilyte) and Oleg (shooQrow)<br>
+    Published by quasilyte tech in 2023
+  </p>
+</footer>
+
+<script>
+window.addEventListener('load', function () {
+  const $title = document.getElementById('board_title');
+  const $tableHeader = document.getElementById('board_header');
+  const $tableBody = document.getElementById('board_body');
+
+  const $modeButtonClassic = document.getElementById('modeswitch_classic');
+  const $modeButtonArena = document.getElementById('modeswitch_arena');
+  const $modeButtonInfArena = document.getElementById('modeswitch_inf_arena');
+  const $modeButtonReverse = document.getElementById('modeswitch_reverse');
+
+  const urlParams = new URLSearchParams(window.location.search);
+  const gameMode = urlParams.get('mode') || 'classic';
+  const gameSeason = '1';
+  console.log(gameMode);
+
+  function sanitizePlayerName(name) {
+    return name.replace(/\W/g, '_');
+  }
+
+  function makeSearchParams(params) {
+    let q = '';
+    if ('mode' in params) {
+      q += `mode=${params['mode']}`;
+    }
+    return q;
+  }
+
+  function setBoardMode(mode) {
+    if (gameMode === mode) {
+      return;
+    }
+    window.location.replace("?" + makeSearchParams({
+      'mode': mode,
+    }));
+  }
+
+  const modeColumns = {
+    'classic':   ['rank', 'player_name', 'difficulty', 'score', 'time'],
+    'arena':     ['rank', 'player_name', 'difficulty', 'score'],
+    'inf_arena': ['rank', 'player_name', 'difficulty', 'score', 'time'],
+    'reverse':   ['rank', 'player_name', 'difficulty', 'score', 'time'],
+  };
+  const columnLabels = {
+    'rank': 'Rank',
+    'player_name': 'Player Name',
+    'difficulty': 'Difficulty',
+    'score': 'Score',
+    'time': 'Time',
+  };
+
+  function fillTable(jsonData) {
+    let columns = modeColumns[gameMode];
+
+    let headerParts = [];
+    for (let col of columns) {
+      headerParts.push(`<th scope="col">${columnLabels[col]}</th>`);
+    }
+    $tableHeader.innerHTML = '<tr>' + headerParts.join("") + "</tr>";
+
+    let rows = [];
+    for (let entry of jsonData) {
+      let entryCols = [];
+      for (let col of columns) {
+        if (col === 'player_name') {
+          let id = sanitizePlayerName(entry[col]);
+          entryCols.push(`<td><a href="#${id}" id="${id}"># ${entry[col]}</a></td>`);
+        } else {
+          entryCols.push(`<td>${entry[col]}</td>`);
+        }
+      }
+      rows.push('<tr>' + entryCols.join('') + '</tr>');
+    }
+    $tableBody.innerHTML = rows.join('');
+
+    let hashLocation = window.location.hash;
+    if (hashLocation) {
+      window.location.href = hashLocation;
+    }
+  }
+
+  function initTable() {
+    if (!(gameMode in modeColumns)) {
+      $tableHeader.innerHTML = '';
+      $tableBody.innerHTML = '';
+      return;
+    }
+    // const serverEndpoint = `http://127.0.0.1:8080/get-board?mode=${gameMode}&season=${gameSeason}`;
+    const serverEndpoint = `https://quasilyte.tech/roboden/api/get-board?mode=${gameMode}&season=${gameSeason}`;
+    fetch(serverEndpoint)
+      .then((response) => response.json())
+      .then((jsonData) => fillTable(jsonData));
+  }
+
+  $modeButtonClassic.addEventListener('click', () => setBoardMode('classic'));
+  $modeButtonArena.addEventListener('click', () => setBoardMode('arena'));
+  $modeButtonInfArena.addEventListener('click', () => setBoardMode('inf_arena'));
+  $modeButtonReverse.addEventListener('click', () => setBoardMode('reverse'));
+
+  const gameModeLabels = {
+    'classic': 'Classic Mode',
+    'arena': 'Arena Mode',
+    'inf_arena': 'Infinite Arena Mode',
+    'reverse': 'Reverse Mode',
+  };
+  const gameModeLabel = gameModeLabels[gameMode] || '?';
+  $title.innerText = `Leaderboard: ${gameModeLabel}, Season ${gameSeason}`;
+
+  initTable();
+});
+</script>
