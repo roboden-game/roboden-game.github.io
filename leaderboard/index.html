@@ -121,7 +121,7 @@ window.addEventListener('load', function () {
           } else {
             dronesList = '<none>'
           }
-          entryCols.push(`<td><a href="#${id}" id="${id}">${entry[col]}</a> <span class="hint" title="${drones}">❓</span></td>`);
+          entryCols.push(`<td><a href="#${id}" id="${id}">${entry[col]}</a> <span class="hint" title="${dronesList}">❓</span></td>`);
         } else {
           let value = entry[col];
           if (col === 'time') {
