@@ -115,12 +115,13 @@ window.addEventListener('load', function () {
       for (let col of columns) {
         if (col === 'player_name') {
           let id = sanitizePlayerName(entry[col]);
+          let dronesList = '';
           if (entry["drones"]) {
-            let drones = entry["drones"].split(",").join(", ");
-            entryCols.push(`<td><a href="#${id}" id="${id}">${entry[col]}</a> <span class="hint" title="${drones}">❓</span></td>`);
+            dronesList = entry["drones"].split(",").join(", ");
           } else {
-            entryCols.push(`<td><a href="#${id}" id="${id}">${entry[col]}</a></span></td>`);
+            dronesList = '<none>'
           }
+          entryCols.push(`<td><a href="#${id}" id="${id}">${entry[col]}</a> <span class="hint" title="${drones}">❓</span></td>`);
         } else {
           let value = entry[col];
           if (col === 'time') {
