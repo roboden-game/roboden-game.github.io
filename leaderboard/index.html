@@ -94,13 +94,14 @@ window.addEventListener('load', function () {
   }
 
   const modeColumns = {
-    'classic':   ['rank', 'player_name', 'difficulty', 'score', 'time'],
-    'arena':     ['rank', 'player_name', 'difficulty', 'score'],
-    'inf_arena': ['rank', 'player_name', 'difficulty', 'score', 'time'],
-    'reverse':   ['rank', 'player_name', 'difficulty', 'score', 'time'],
+    'classic':   ['rank', 'platform', 'player_name', 'difficulty', 'score', 'time'],
+    'arena':     ['rank', 'platform', 'player_name', 'difficulty', 'score'],
+    'inf_arena': ['rank', 'platform', 'player_name', 'difficulty', 'score', 'time'],
+    'reverse':   ['rank', 'platform', 'player_name', 'difficulty', 'score', 'time'],
   };
   const columnLabels = {
     'rank': 'Rank',
+    'platform': 'Clan',
     'player_name': 'Player Name',
     'difficulty': 'Difficulty',
     'score': 'Score',
