@@ -23,6 +23,7 @@
 
     <div class="grid">
       <button id="modeswitch_classic" data-theme="dark" type="button">Classic Mode</button>
+      <button id="modeswitch_blitz" data-theme="dark" type="button">Blitz Mode</button>
       <button id="modeswitch_arena" data-theme="dark" type="button">Arena Mode</button>
       <button id="modeswitch_inf_arena" data-theme="dark" type="button">Infinite Arena Mode</button>
       <button id="modeswitch_reverse" data-theme="dark" type="button">Reverse Mode</button>
@@ -53,6 +54,7 @@ window.addEventListener('load', function () {
   const $tableBody = document.getElementById('board_body');
 
   const $modeButtonClassic = document.getElementById('modeswitch_classic');
+  const $modeButtonBlitz = document.getElementById('modeswitch_blitz');
   const $modeButtonArena = document.getElementById('modeswitch_arena');
   const $modeButtonInfArena = document.getElementById('modeswitch_inf_arena');
   const $modeButtonReverse = document.getElementById('modeswitch_reverse');
@@ -95,6 +97,7 @@ window.addEventListener('load', function () {
 
   const modeColumns = {
     'classic':   ['rank', 'platform', 'player_name', 'difficulty', 'score', 'time'],
+    'blitz':   ['rank', 'platform', 'player_name', 'difficulty', 'score', 'time'],
     'arena':     ['rank', 'platform', 'player_name', 'difficulty', 'score'],
     'inf_arena': ['rank', 'platform', 'player_name', 'difficulty', 'score', 'time'],
     'reverse':   ['rank', 'platform', 'player_name', 'difficulty', 'score', 'time'],
@@ -170,12 +173,14 @@ window.addEventListener('load', function () {
   }
 
   $modeButtonClassic.addEventListener('click', () => setBoardMode('classic'));
+  $modeButtonBlitz.addEventListener('click', () => setBoardMode('blitz'));
   $modeButtonArena.addEventListener('click', () => setBoardMode('arena'));
   $modeButtonInfArena.addEventListener('click', () => setBoardMode('inf_arena'));
   $modeButtonReverse.addEventListener('click', () => setBoardMode('reverse'));
 
   const gameModeLabels = {
     'classic': 'Classic Mode',
+    'blitz': 'Blitz Mode',
     'arena': 'Arena Mode',
     'inf_arena': 'Infinite Arena Mode',
     'reverse': 'Reverse Mode',
